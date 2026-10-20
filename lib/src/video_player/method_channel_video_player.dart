@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
 import 'package:better_player_plus/src/core/better_player_utils.dart';
+import 'package:better_player_plus/src/diagnostics/better_player_diagnostics.dart';
 import 'package:better_player_plus/src/video_player/video_player_platform_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -285,6 +286,13 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
 
           case 'pipStop':
             return VideoEvent(eventType: VideoEventType.pipStop, key: key);
+
+          case 'diag':
+            betterPlayerNativeTraceListener?.call(
+              map['message'] as String? ?? '',
+              map.map((Object? key, Object? value) => MapEntry('$key', value)),
+            );
+            return VideoEvent(eventType: VideoEventType.unknown, key: key);
 
           default:
             return VideoEvent(eventType: VideoEventType.unknown, key: key);
